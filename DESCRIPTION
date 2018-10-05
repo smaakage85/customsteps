@@ -1,0 +1,23 @@
+Package: customizableSteps
+Title: Customizable Higher Order Recipes Step Functions
+Version: 0.7.0.0
+Authors@R: person("Lars", "Kjeldgaard", email = "lars.kjeldgaard@skat.dk", role = c("aut", "cre"))
+Description: Higher order step functions for the 'recipes' package. These 
+    step functions take prep and bake helper functions as inputs and create 
+    customized step functions as output.
+URL: https://github.com/smaakage85/modelgrid
+Depends: R (>= 3.4.3)
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+Suggests: knitr,
+    rmarkdown
+VignetteBuilder: knitr
+Imports: recipes,
+    dplyr,
+    tibble,
+    magrittr,
+    purrr,
+    tidyselect,
+    broom
+RoxygenNote: 6.1.0
