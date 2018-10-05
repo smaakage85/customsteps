@@ -176,7 +176,7 @@ step_custom_transformation <-
       stop("'prep_fct_args' must be a list.")
     }
 
-    if (!is.null(prep_fct) && !("x" %in% formalArgs(prep_fct))) {
+    if (!is.null(prep_fct) && !("x" %in% methods::formalArgs(prep_fct))) {
       stop("The prep helper function - 'prep_fct' - must have an 'x'
            argument, that should correspond to the input data.")
     }
@@ -194,7 +194,7 @@ step_custom_transformation <-
       stop("Set 'bake_how' to either 'bind_cols' or 'replace'.")
     }
 
-    if (!("x" %in% formalArgs(bake_fct))) {
+    if (!("x" %in% methods::formalArgs(bake_fct))) {
       stop("The bake helper function - 'bake_fct' - must have an 'x'
            argument, that should correspond to the new data set
            on which the recipe step will be applied.")

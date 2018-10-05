@@ -1,7 +1,7 @@
 Package: customizableSteps
 Title: Customizable Higher Order Recipes Step Functions
 Version: 0.7.0.0
-Authors@R: person("Lars", "Kjeldgaard", email = "lars.kjeldgaard@skat.dk", role = c("aut", "cre"))
+Authors@R: person("Lars", "Kjeldgaard", email = "lars.kjeldgaard@hotmail.com", role = c("aut", "cre"))
 Description: Higher order step functions for the 'recipes' package. These 
     step functions take prep and bake helper functions as inputs and create 
     customized step functions as output.
@@ -19,5 +19,6 @@ Imports: recipes,
     magrittr,
     purrr,
     tidyselect,
-    broom
+    broom,
+    methods
 RoxygenNote: 6.1.0
