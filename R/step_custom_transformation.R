@@ -18,31 +18,31 @@
 #'   run, some operations may not be able to be conducted on new data (e.g.
 #'   processing the outcome variable(s)). Care should be taken when using `skip
 #'   = TRUE` as it may affect the computations for subsequent operations.
-#' @param prep_fct A function. This is a helper function for the `prep` method.
+#' @param prep_function A function. This is a helper function for the `prep` method.
 #'   It will be invoked, when the recipe is 'prepped' (/trained) with
 #'   `prep.recipe()`. The function MUST satisfy the following conditions: (1)
 #'   the function must take an argument `x`: input data with only the selected
 #'   variables, (2) the function MUST return the relevant statistics that should
 #'   be learned on the train set and used for preparation of new new data sets.
-#'   This output can be of any appropriate type and shape. Leave `prep_fct` as
+#'   This output can be of any appropriate type and shape. Leave `prep_function` as
 #'   NULL, if the preparation of new data sets does not depend on
 #'   statistics/computations learned on the train set.
-#' @param prep_fct_args A list with (any) additional arguments for the prep
+#' @param prep_options A list with (any) additional arguments for the prep
 #'   helper function call EXCEPT for the `x` argument. Leave as NULL, if no
-#'   `prep_fct` is given.
-#' @param prep_output Output from prep helper (`prep_fct`) function call. The
+#'   `prep_function` is given.
+#' @param prep_output Output from prep helper (`prep_function`) function call. The
 #'   results are not computed until `prep.recipe()` is called.
-#' @param bake_fct A function. This is a helper function for the 'bake' method.
+#' @param bake_function A function. This is a helper function for the 'bake' method.
 #'   It will be invoked, when the recipe is 'baked' (/transforms a new data set)
 #'   with `bake.recipe()`. The function MUST satisfy the following conditions:
 #'   (1) the function must take an argument `x`: data set with the selected
 #'   variables from the new data set, (2) if the preparation of new data sets
 #'   depends on statistics learned on the train set, the function must take the
-#'   argument `prep_output`: the output from the prep helper fct (`prep_fct`),
+#'   argument `prep_output`: the output from the prep helper fct (`prep_function`),
 #'   (3) the output from from the function should be the transformed variables.
 #'   The output must be of a type and shape, that allows it to be binded column
 #'   wise to the new data set after converting it to a `tibble`.
-#' @param bake_fct_args A list with (any) arguments for the bake helper function
+#' @param bake_options A list with (any) arguments for the bake helper function
 #'   call EXCEPT for the `x` and `prep_output` arguments.
 #' @param bake_how A character. How should the transformed variables be appended
 #'   to the new data set? Choose from options (1) `bind_cols`: simply bind the
@@ -97,10 +97,10 @@
 #' # create recipe.
 #' rec <- recipes::recipe(df) %>%
 #'   step_custom_transformation(b, c,
-#'                              prep_fct = compute_means_sd,
-#'                              prep_fct_args = list(na.rm = TRUE, trim = 0.05),
-#'                              bake_fct = center_scale,
-#'                              bake_fct_args = list(k = 2),
+#'                              prep_function = compute_means_sd,
+#'                              prep_options = list(na.rm = TRUE, trim = 0.05),
+#'                              bake_function = center_scale,
+#'                              bake_options = list(k = 2),
 #'                              bake_how = "bind_cols")
 #'
 #' # prep recipe.
@@ -132,7 +132,7 @@
 #' # create recipe.
 #' rec <- recipes::recipe(df) %>%
 #'   step_custom_transformation(everything(),
-#'                              bake_fct = simple_calculation,
+#'                              bake_function = simple_calculation,
 #'                              bake_how = "bind_cols")
 #'
 #' # prep recipe.
@@ -153,49 +153,50 @@ step_custom_transformation <-
            ...,
            role = "predictor",
            trained = FALSE,
-           prep_fct = NULL,
-           prep_fct_args = NULL,
+           prep_function = NULL,
+           prep_options = NULL,
            prep_output = NULL,
-           bake_fct = NULL,
-           bake_fct_args = NULL,
+           bake_function = NULL,
+           bake_options = NULL,
            bake_how = "bind_cols",
            selected_vars = NULL,
-           skip = FALSE) {
+           skip = FALSE,
+           id = recipes::rand_id("custom_transformation")) {
 
     ####  check inputs.
-    if (is.null(bake_fct)) {
-      stop("No bake helper function ('bake_fct') has been set.")
+    if (is.null(bake_function)) {
+      stop("No bake helper function ('bake_function') has been set.")
     }
 
     # inputs for 'prep.recipe()'.
-    if (!is.null(prep_fct) && !is.function(prep_fct)) {
-      stop("'prep_fct' must be a function.")
+    if (!is.null(prep_function) && !is.function(prep_function)) {
+      stop("'prep_function' must be a function.")
     }
 
-    if (!is.null(prep_fct_args) && !is.list(prep_fct_args)) {
-      stop("'prep_fct_args' must be a list.")
+    if (!is.null(prep_options) && !is.list(prep_options)) {
+      stop("'prep_options' must be a list.")
     }
 
-    if (!is.null(prep_fct) && !("x" %in% methods::formalArgs(prep_fct))) {
-      stop("The prep helper function - 'prep_fct' - must have an 'x'
+    if (!is.null(prep_function) && !("x" %in% methods::formalArgs(prep_function))) {
+      stop("The prep helper function - 'prep_function' - must have an 'x'
            argument, that should correspond to the input data.")
     }
 
     # inputs for 'bake.recipe()'.
-    if (!is.function(bake_fct)) {
-      stop("'bake_fct' must be a function.")
+    if (!is.function(bake_function)) {
+      stop("'bake_function' must be a function.")
     }
 
-    if (!is.null(bake_fct_args) && !is.list(bake_fct_args)) {
-      stop("'bake_fct_args' must be a list.")
+    if (!is.null(bake_options) && !is.list(bake_options)) {
+      stop("'bake_options' must be a list.")
     }
 
     if (!isTRUE(bake_how %in% c("bind_cols", "replace"))) {
       stop("Set 'bake_how' to either 'bind_cols' or 'replace'.")
     }
 
-    if (!("x" %in% methods::formalArgs(bake_fct))) {
-      stop("The bake helper function - 'bake_fct' - must have an 'x'
+    if (!("x" %in% methods::formalArgs(bake_function))) {
+      stop("The bake helper function - 'bake_function' - must have an 'x'
            argument, that should correspond to the new data set
            on which the recipe step will be applied.")
     }
@@ -207,14 +208,15 @@ step_custom_transformation <-
         terms = recipes::ellipse_check(...),
         trained = trained,
         role = role,
-        prep_fct = prep_fct,
-        prep_fct_args = prep_fct_args,
+        prep_function = prep_function,
+        prep_options = prep_options,
         prep_output = prep_output,
-        bake_fct = bake_fct,
-        bake_fct_args = bake_fct_args,
+        bake_function = bake_function,
+        bake_options = bake_options,
         bake_how = bake_how,
         selected_vars = selected_vars,
-        skip = skip
+        skip = skip,
+        id = id
       )
     )
     }
@@ -224,36 +226,38 @@ step_custom_transformation_new <-
   function(terms = NULL,
            role = "predictor",
            trained = FALSE,
-           prep_fct = NULL,
-           prep_fct_args = NULL,
+           prep_function = NULL,
+           prep_options = NULL,
            prep_output = prep_output,
-           bake_fct = NULL,
-           bake_fct_args = NULL,
+           bake_function = NULL,
+           bake_options = NULL,
            bake_how = "bind_cols",
            selected_vars = NULL,
-           skip = FALSE) {
+           skip = FALSE,
+           id = id) {
     recipes::step(
       subclass = "custom_transformation",
       terms = terms,
       role = role,
       trained = trained,
-      prep_fct = prep_fct,
-      prep_fct_args = prep_fct_args,
+      prep_function = prep_function,
+      prep_options = prep_options,
       prep_output = prep_output,
-      bake_fct = bake_fct,
-      bake_fct_args = bake_fct_args,
+      bake_function = bake_function,
+      bake_options = bake_options,
       bake_how = bake_how,
       selected_vars = selected_vars,
-      skip = skip
+      skip = skip,
+      id = id
     )
   }
 
-# prepare step.
+# prepare step (/estimation procedure).
 #' @export
 prep.step_custom_transformation <- function(x, training, info = NULL, ...) {
 
   # check inputs.
-  if (is.null(x$prep_fct) && !is.null(x$prep_fct_args) && length(list(...)) == 0) {
+  if (is.null(x$prep_function) && !is.null(x$prep_options) && length(list(...)) == 0) {
     stop("Arguments for the prep helper function have been provided, but
          no prep helper function has been set.")
   }
@@ -263,7 +267,7 @@ prep.step_custom_transformation <- function(x, training, info = NULL, ...) {
 
   # if no prep helper function has been specified, do nothing. Execute the
   # prep helper function otherwise.
-  if (!is.null(x$prep_fct)) {
+  if (!is.null(x$prep_function)) {
 
     #### prepare all arguments before calling the prep helper function.
 
@@ -271,8 +275,8 @@ prep.step_custom_transformation <- function(x, training, info = NULL, ...) {
     args <- list(x = training[, selected_vars])
 
     # add additional arguments (if any).
-    if (!is.null(x$prep_fct_args)) {
-      args <- append(args, x$prep_fct_args)
+    if (!is.null(x$prep_options)) {
+      args <- append(args, x$prep_options)
     }
 
     # add arbitrary arguments (if any).
@@ -281,12 +285,12 @@ prep.step_custom_transformation <- function(x, training, info = NULL, ...) {
     }
 
     # compute intermediate output from prep helper function.
-    prep_output <- do.call(purrr::safely(x$prep_fct), args)
+    prep_output <- do.call(purrr::safely(x$prep_function), args)
 
     # handle errors (if any).
     if (!is.null(prep_output$error)) {
       cat("An error occured in the call to the prep helper function",
-          "('prep_fct'). See details below: ")
+          "('prep_function'). See details below: ")
       stop(prep_output$error)
     }
 
@@ -304,19 +308,20 @@ prep.step_custom_transformation <- function(x, training, info = NULL, ...) {
     terms = x$terms,
     role = x$role,
     trained = TRUE,
-    prep_fct = x$prep_fct,
-    prep_fct_args = x$prep_fct_args,
+    prep_function = x$prep_function,
+    prep_options = x$prep_options,
     prep_output = prep_output,
-    bake_fct = x$bake_fct,
-    bake_fct_args = x$bake_fct_args,
+    bake_function = x$bake_function,
+    bake_options = x$bake_options,
     bake_how = x$bake_how,
     selected_vars = selected_vars,
-    skip = x$skip
+    skip = x$skip,
+    id = x$id
   )
 
   }
 
-# bake step.
+# bake step (/apply step).
 #' @export
 bake.step_custom_transformation <- function(object, newdata, info = NULL, ...) {
 
@@ -331,8 +336,8 @@ bake.step_custom_transformation <- function(object, newdata, info = NULL, ...) {
   }
 
   # add additional arguments (if any).
-  if (!is.null(object$bake_fct_args)) {
-    args <- append(args, object$bake_fct_args)
+  if (!is.null(object$bake_options)) {
+    args <- append(args, object$bake_options)
   }
 
   # add arbitrary arguments (if any).
@@ -341,7 +346,7 @@ bake.step_custom_transformation <- function(object, newdata, info = NULL, ...) {
   }
 
   # invoke the bake helper function.
-  bake_fct_output <- do.call(object$bake_fct, args) %>%
+  bake_function_output <- do.call(object$bake_function, args) %>%
     # convert output to tibble.
     tibble::as_tibble(.)
 
@@ -352,17 +357,17 @@ bake.step_custom_transformation <- function(object, newdata, info = NULL, ...) {
                    "bind_cols" = {
 
                      # check_inputs.
-                     if (nrow(bake_fct_output) != nrow(newdata)) {
+                     if (nrow(bake_function_output) != nrow(newdata)) {
                        stop("There was a mismatch between the number of rows in ",
                             "the output from the bake helper function (",
-                            nrow(bake_fct_output), ") and the number of rows of ",
+                            nrow(bake_function_output), ") and the number of rows of ",
                             "the input data (", nrow(newdata), ").")
                      }
 
                      # bind output columns to input data.frame.
                      newdata %>%
                        tibble::as.tibble(.) %>%
-                       dplyr::bind_cols(., bake_fct_output)
+                       dplyr::bind_cols(., bake_function_output)
                    },
 
                    # replace selected variables with output.
@@ -370,10 +375,10 @@ bake.step_custom_transformation <- function(object, newdata, info = NULL, ...) {
 
                      # check_inputs.
                      if (!all(names(newdata) %in% object$selected_vars) &&
-                         nrow(bake_fct_output) != nrow(newdata)) {
+                         nrow(bake_function_output) != nrow(newdata)) {
                        stop("There was a mismatch between the ",
                             "number of rows in the output from ",
-                            "the bake helper function (", nrow(bake_fct_output),
+                            "the bake helper function (", nrow(bake_function_output),
                             ") and the number of rows of the input data ",
                             "(", nrow(newdata), ").")
                      }
@@ -383,7 +388,7 @@ bake.step_custom_transformation <- function(object, newdata, info = NULL, ...) {
                        # drop selected vars.
                        dplyr::select(-c(object$selected_vars)) %>%
                        # bind output columns to input data.frame.
-                       dplyr::bind_cols(., bake_fct_output)
+                       dplyr::bind_cols(., bake_function_output)
 
                    })
 
