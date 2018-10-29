@@ -1,9 +1,9 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-modelgrid <img src="man/figures/logo.png" align="right" />
-==========================================================
+customsteps <img src="man/figures/logo.png" align="right" />
+============================================================
 
-[![Travis-CI Build Status](https://travis-ci.org/smaakage85/customsteps.svg?branch=master)](https://travis-ci.org/smaakage85/customsteps) [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/smaakage85/customsteps?branch=master&svg=true)](https://ci.appveyor.com/project/smaakage85/customsteps) [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/customsteps)](https://cran.r-project.org/package=customsteps)
+[![Travis-CI Build Status](https://travis-ci.org/smaakage85/customsteps.svg?branch=master)](https://travis-ci.org/smaakage85/customsteps) [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/smaakage85/customsteps?branch=master&svg=true)](https://ci.appveyor.com/project/smaakage85/customsteps)
 
 This is a small package ..
 
