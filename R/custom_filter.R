@@ -15,7 +15,7 @@
 #'  filter function as arguments (see Details below).
 #' @param removals A character string that contains the names of
 #'  the columns that should be removed. These values are not determined
-#'  until `recipes::prep.recipe()` is called.
+#'  until [recipes::prep.recipe()] is called.
 #' @return An updated version of `recipe` with the new step
 #'  added to the sequence of existing steps (if any). For the
 #'  `tidy` method, a tibble with columns `terms` which
@@ -69,7 +69,8 @@
 #'
 #'   } else {
 #'
-#'     problematic_lgl <- map_lgl(x, ~ mean(is.na(.) | . %in% other_values) >= threshold)
+#'     problematic_lgl <- map_lgl(x, ~ mean(is.na(.) | 
+#'     . %in% other_values) >= threshold)
 #'
 #'   }
 #'
@@ -189,7 +190,9 @@ prep.step_custom_filter <- function(x, training, info = NULL, ...) {
   # identify problematic variables using the filter function.
   filter <- tryCatch({invoke(x$filter_function, filter_args)},
                      error = function(e) {
-                       stop("Error when invoking the filter function.")
+                       stop("Error when invoking the filter function. ",
+                            "See details below: \n",
+                            e)
                      })
   
   # check output from filter function.

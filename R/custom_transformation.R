@@ -251,7 +251,7 @@ step_custom_transformation_new <-
 # prepare step (train step/estimate parameters on training data).
 #' @export
 #' @importFrom recipes prep terms_select
-#' @importFrom purrr safely invoke
+#' @importFrom purrr invoke
 prep.step_custom_transformation <- function(x, training, info = NULL, ...) {
   
   # selected vars as character vector.
@@ -272,17 +272,13 @@ prep.step_custom_transformation <- function(x, training, info = NULL, ...) {
     }
     
     # compute intermediate output from prep helper function.
-    prep_output <- invoke(safely(x$prep_function), args)
-    
-    # handle errors (if any).
-    if (!is.null(prep_output$error)) {
-      cat("An error occured in the call to the prep helper function",
-          "('prep_function'). See details below: ")
-      stop(prep_output$error)
-    }
-    
-    # otherwise continue with output from the function call.
-    prep_output <- prep_output$result
+    prep_output <- tryCatch({
+      invoke(x$prep_function, args)},
+      error = function(e) {
+        stop("An error occured in the call to the prep helper function",
+             "('prep_function'). See details below: \n",
+             e)
+      })
     
   } else {
     
@@ -334,9 +330,19 @@ bake.step_custom_transformation <- function(object, newdata, ...) {
   # invoke the bake helper function.
   bake_function_output <-
     tryCatch({
-      invoke(object$bake_function, args) %>%
-        # convert output to tibble.
-        as_tibble()
+      invoke(object$bake_function, args)
+      },
+      error = function(e) {
+      stop("An error occured in the call to the bake helper function",
+           "('bake_function'). See details below: \n",
+           e)
+      })
+  
+  # convert to tibble.
+  bake_function_output <-
+    tryCatch({
+      bake_function_output %>%
+        as_tibble(.)
     },
     error = function(e) {
       stop("Unable to convert output from bake helper function to tibble.")

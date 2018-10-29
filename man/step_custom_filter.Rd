@@ -33,7 +33,7 @@ filter function as arguments (see Details below).}
 
 \item{removals}{A character string that contains the names of
 the columns that should be removed. These values are not determined
-until `recipes::prep.recipe()` is called.}
+until [recipes::prep.recipe()] is called.}
 
 \item{skip}{A logical. Should the step be skipped when the
 recipe is baked by \code{\link[=bake.recipe]{bake.recipe()}}? While all operations are baked
@@ -99,7 +99,8 @@ filter_missings <- function(x, threshold = 0.5, other_values = NULL) {
 
   } else {
 
-    problematic_lgl <- map_lgl(x, ~ mean(is.na(.) | . \%in\% other_values) >= threshold)
+    problematic_lgl <- map_lgl(x, ~ mean(is.na(.) | 
+    . \%in\% other_values) >= threshold)
 
   }
 
