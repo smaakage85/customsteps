@@ -20,6 +20,6 @@ Imports: recipes,
     magrittr,
     purrr,
     tidyselect,
-    broom,
-    methods
+    methods,
+    generics
 RoxygenNote: 6.1.0

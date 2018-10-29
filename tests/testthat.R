@@ -1,4 +1,4 @@
 library(testthat)
-library(customizableSteps)
+library(customsteps)
 
-test_check("customizableSteps")
+test_check(package = "customsteps")
