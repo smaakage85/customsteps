@@ -14,7 +14,7 @@ Suggests: knitr,
     rmarkdown,
     testthat
 VignetteBuilder: knitr
-Imports: recipes,
+Imports: recipes (>= 0.1.3.9002),
     dplyr,
     tibble,
     magrittr,
@@ -22,4 +22,6 @@ Imports: recipes,
     tidyselect,
     methods,
     generics
-RoxygenNote: 6.1.0
+Remotes:
+    tidymodels/recipes
+RoxygenNote: 6.1.0.9000
