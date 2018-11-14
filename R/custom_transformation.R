@@ -310,12 +310,12 @@ prep.step_custom_transformation <- function(x, training, info = NULL, ...) {
 #' @importFrom purrr invoke
 #' @importFrom recipes bake
 #' @importFrom tibble as_tibble
-bake.step_custom_transformation <- function(object, newdata, ...) {
+bake.step_custom_transformation <- function(object, new_data, ...) {
   
   #### prepare arguments before calling the bake helper function.
   
-  # add mandatory argument for 'x' - set to newdata.
-  args <- list(x = newdata)
+  # add mandatory argument for 'x' - set to new_data.
+  args <- list(x = new_data)
   
   # add intermediate output from the prep helper function.
   if (!is.null(object$prep_output)) {
@@ -349,12 +349,12 @@ bake.step_custom_transformation <- function(object, newdata, ...) {
     })
   
   # check dimensions of output from bake helper function.
-  if (nrow(bake_function_output) != nrow(newdata)) {
+  if (nrow(bake_function_output) != nrow(new_data)) {
     stop("There was a mismatch between the number of rows ",
          "in the output from the bake helper function (",
          nrow(bake_function_output),
          ") and the number of rows of the input data (",
-         nrow(newdata), ").")
+         nrow(new_data), ").")
   }
   
   # append to input data the output from the bake helper function.
@@ -364,7 +364,7 @@ bake.step_custom_transformation <- function(object, newdata, ...) {
                    "bind_cols" = {
                      
                      # bind output columns to input data.frame.
-                     newdata %>%
+                     new_data %>%
                        as_tibble() %>%
                        bind_cols(bake_function_output)
                      
@@ -373,7 +373,7 @@ bake.step_custom_transformation <- function(object, newdata, ...) {
                    # replace selected variables with output.
                    "replace" = {
                      
-                     newdata %>%
+                     new_data %>%
                        as_tibble() %>%
                        # drop selected vars.
                        select(-c(object$selected_vars)) %>%
@@ -409,5 +409,7 @@ print.step_custom_transformation <-
 tidy.step_custom_transformation <- function(x, ...) {
   
   res <- tibble(terms = sel2char(x$terms))
+  res$id <- x$id
+  res
   
 }

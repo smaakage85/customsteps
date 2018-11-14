@@ -222,15 +222,15 @@ prep.step_custom_filter <- function(x, training, info = NULL, ...) {
 # bake step (/apply step on new data).
 #' @export
 #' @importFrom tibble as_tibble
-bake.step_custom_filter <- function(object, newdata, ...) {
+bake.step_custom_filter <- function(object, new_data, ...) {
   
   # remove problematic variables.
   if (length(object$removals) > 0) {
-    newdata <- newdata[, !(colnames(newdata) %in% object$removals)]
+    new_data <- new_data[, !(colnames(new_data) %in% object$removals)]
   }
   
   # return data set after filtering.
-  as_tibble(newdata)
+  as_tibble(new_data)
   
 }
 
@@ -273,6 +273,7 @@ tidy.step_custom_filter <- function(x, ...) {
     }
   }
   
+  res$id <- x$id
   res
   
 }
