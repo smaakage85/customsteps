@@ -6,7 +6,7 @@ Description: Higher order step functions for the 'recipes' package. These
     step functions take 'prep' and 'bake' helper functions as inputs and create 
     specifications of customized 'recipes' steps as output.
 URL: https://github.com/smaakage85/customsteps
-Depends: R (>= 3.4.3)
+Depends: R (>= 3.5.0)
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true

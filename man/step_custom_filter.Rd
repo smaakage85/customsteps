@@ -88,7 +88,7 @@ df <- tibble(a = c(1, -999, 3,NA,NA),
 
 # Create custom function to identify variables with a proportion of missing
 # values above some threshold. The function treats
-# values provided with the 'other_values' argument as missing.
+# values provided with the 'other_values' argument as missings.
 
 filter_missings <- function(x, threshold = 0.5, other_values = NULL) {
 

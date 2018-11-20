@@ -120,9 +120,9 @@ compute_means_sd <- function(x, na.rm = FALSE, trim = 0) {
 # then divides by the standard deviation.
 center_scale <- function(x, prep_output, k) {
 
-  newdata <- select(x, names(prep_output))
+  new_data <- select(x, names(prep_output))
 
-  map2(.x = newdata,
+  map2(.x = new_data,
        .y = prep_output,
        ~ (.x - k * .y$mean) / .y$sd)
 }
