@@ -5,3 +5,5 @@
 ^appveyor\.yml$
 ^README\.md$
 ^README\.Rmd$
+^vignettes/customsteps\.html$
+^cran-comments\.md$

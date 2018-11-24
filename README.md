@@ -5,7 +5,7 @@ customsteps <img src="man/figures/logo.png" align="right" />
 
 [![Travis-CI Build Status](https://travis-ci.org/smaakage85/customsteps.svg?branch=master)](https://travis-ci.org/smaakage85/customsteps) [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/smaakage85/customsteps?branch=master&svg=true)](https://ci.appveyor.com/project/smaakage85/customsteps)
 
-This is a small package that offers a set of customizable higher-order recipe step functions compatible with the 'recipes' package.
+This is a small package that offers a set of customizable higher-order recipe step functions compatible with the [`recipes`](https://cran.r-project.org/web/packages/recipes/recipes.pdf) package.
 
 Installation
 ------------

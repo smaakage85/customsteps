@@ -1,6 +1,6 @@
 #' Custom Filter
 #'
-#' `step_custom_filter` creates a *specification* of a (higher order) recipe
+#' `step_custom_filter` creates a *specification* of a (higher-order) recipe
 #' step that will potentially remove variables using a custom filter function.
 #'
 #' @inheritParams recipes::step_center
@@ -19,7 +19,7 @@
 #' @return An updated version of `recipe` with the new step
 #'  added to the sequence of existing steps (if any). For the
 #'  `tidy` method, a tibble with columns `terms` which
-#'  is the columns that will be removed.
+#'  is the columns that will be removed as well as the step `id`.
 #' @keywords datagen
 #' @concept preprocessing variable_filters
 #' 
@@ -32,7 +32,7 @@
 #'  following requirements:
 #' \enumerate{
 #'   \item the function must at least take one argument `x`:
-#'   input data with the selected variables.
+#'   the subset of selected variables from the initial data set.
 #'   \item the function must return a vector with the names of
 #'   the variables diagnosed as problematic.
 #' }
@@ -56,9 +56,9 @@
 #'              e = c(-999, -999, -999, -999, NA),
 #'              f = rep(NA, 5))
 #'
-#' # Create custom function to identify variables with a proportion of missing
-#' # values above some threshold. The function treats
-#' # values provided with the 'other_values' argument as missings.
+#' # Create custom filter function to identify variables with a proportion of
+#' # missing values above some threshold. The function treats # values provided
+#' # with the 'other_values' argument as missings.
 #'
 #' filter_missings <- function(x, threshold = 0.5, other_values = NULL) {
 #'
@@ -127,8 +127,8 @@ step_custom_filter <-
     
     if (!("x" %in% formalArgs(filter_function))) {
       stop("The filter function - 'filter_function' - must take an 'x'
-           argument, which should be a data set with the selected variables
-           from the input data.")
+           argument, which should be the subset of selected variables
+           from the initial data set.")
     }
     
     add_step(
@@ -170,7 +170,7 @@ step_custom_filter_new <-
     )
   }
 
-# prepare step (detect problematic variables on training data).
+# prepare step (detect problematic variables on initial data set).
 #' @export
 #' @importFrom recipes prep terms_select
 #' @importFrom purrr invoke
@@ -187,7 +187,7 @@ prep.step_custom_filter <- function(x, training, info = NULL, ...) {
     filter_args <- append(list(x = training[, col_names]), x$options)
   }
   
-  # identify problematic variables using the filter function.
+  # invoke the filter function and identify problematic variables.
   filter <- tryCatch({invoke(x$filter_function, filter_args)},
                      error = function(e) {
                        stop("Error when invoking the filter function. ",
@@ -219,7 +219,7 @@ prep.step_custom_filter <- function(x, training, info = NULL, ...) {
   
 }
 
-# bake step (/apply step on new data).
+# bake step (/apply filter to new data set and remove problematic variables).
 #' @export
 #' @importFrom tibble as_tibble
 bake.step_custom_filter <- function(object, new_data, ...) {

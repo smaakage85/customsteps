@@ -50,10 +50,10 @@ the computations for subsequent operations}
 An updated version of `recipe` with the new step
  added to the sequence of existing steps (if any). For the
  `tidy` method, a tibble with columns `terms` which
- is the columns that will be removed.
+ is the columns that will be removed as well as the step `id`.
 }
 \description{
-`step_custom_filter` creates a *specification* of a (higher order) recipe
+`step_custom_filter` creates a *specification* of a (higher-order) recipe
 step that will potentially remove variables using a custom filter function.
 }
 \details{
@@ -62,7 +62,7 @@ This step diagnoses problematic variables according to
  following requirements:
 \enumerate{
   \item the function must at least take one argument `x`:
-  input data with the selected variables.
+  the subset of selected variables from the initial data set.
   \item the function must return a vector with the names of
   the variables diagnosed as problematic.
 }
@@ -86,9 +86,9 @@ df <- tibble(a = c(1, -999, 3,NA,NA),
              e = c(-999, -999, -999, -999, NA),
              f = rep(NA, 5))
 
-# Create custom function to identify variables with a proportion of missing
-# values above some threshold. The function treats
-# values provided with the 'other_values' argument as missings.
+# Create custom filter function to identify variables with a proportion of
+# missing values above some threshold. The function treats # values provided
+# with the 'other_values' argument as missings.
 
 filter_missings <- function(x, threshold = 0.5, other_values = NULL) {
 

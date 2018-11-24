@@ -32,37 +32,35 @@ been estimated.}
 \item{prep_function}{A function. This is a helper function for the
 [recipes::prep.recipe()] method. It will be invoked, when the recipe is
 'prepped' by [recipes::prep.recipe()]. The function MUST satisfy the
-following conditions: (1) the function must take an argument `x`: input
-data with only the selected variables (`selected_vars`), (2) the function
-MUST return the (required) estimated parameters from a training set that
-can be later applied to other data sets. This output can be of any
-appropriate type and shape. Leave `prep_function` as NULL, if the
-preparation of new data sets does not depend on parameters learned on the
-training set.}
+following conditions: (1) the function must take an argument `x`: the the
+subset of selected variables (`selected_vars`) from the initial data set,
+(2) the function MUST return the (required) estimated parameters that can
+be later applied to other data sets. This output can be of any appropriate
+type and shape. Leave `prep_function` as NULL, if the preparation of new
+data sets does not depend on parameters learned on the initial data set.}
 
 \item{prep_options}{A list with (any) additional arguments for the prep
 helper function call EXCEPT for the `x` argument. Leave as NULL, if no
 `prep_function` is given.}
 
 \item{prep_output}{Output from prep helper (`prep_function`) function call
-consisting of the estimated parameters from the training set, that will be
-applied to other data sets. Results are not computed until
+consisting of the estimated parameters from the initial data set set, that
+will be applied to other data sets. Results are not computed until
 [recipes::prep.recipe()] is called.}
 
 \item{bake_function}{A function. This is a helper function for the 'bake'
 method. It will be invoked, when the recipe is 'baked' by `bake.recipe()`.
 The function MUST satisfy the following conditions: (1) the function must
-take an argument `x`: data set with only the selected variables
-(`selected_vars`) from the new data set, (2) if the preparation of new data
-sets depends on parameters learned on the train set, the function must take
-the argument `prep_output`: the output from the prep helper fct
-(`prep_function`), (3) the output from from the function should be the
-transformed variables. The output must be of a type and shape, that allows
-it to be binded column wise to the new data set after converting it to a
-`tibble`.}
+take an argument `x`: the new data set, that the transformation will be
+applied to, (2) IF the preparation of new data sets depends on parameters
+learned on the initial data set, the function must take the argument
+`prep_output`: the output from the prep helper fct (`prep_function`), (3)
+the output from from the function should be the transformed variables. The
+output must be of a type and shape, that allows it to be binded column wise
+to the new data set after converting it to a `tibble`.}
 
-\item{bake_options}{A list with (any) arguments for the bake helper function
-call EXCEPT for the `x` and `prep_output` arguments.}
+\item{bake_options}{A list with (any) arguments for the `bake_function`
+function call EXCEPT for the `x` and `prep_output` arguments.}
 
 \item{bake_how}{A character. How should the transformed variables be appended
 to the new data set? Choose from options (1) `bind_cols`: simply bind the
@@ -88,10 +86,11 @@ for subsequent operations.}
 \value{
 An updated version of `recipe` with the new step added to the
   sequence of existing steps (if any). For the `tidy` method, a `tibble` with
-  columns `terms` (the selectors or variables selected).
+  columns `terms` (the selectors or variables selected) as well as the step
+  `id`.
 }
 \description{
-`step_custom_transformation` creates a *specification* of a (higher order)
+`step_custom_transformation` creates a *specification* of a higher order
 recipe step that will make a transformation of the input data from (custom)
 `prep` and `bake` helper functions.
 }
