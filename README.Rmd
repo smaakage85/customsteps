@@ -26,7 +26,6 @@ step functions compatible with the 'recipes' package.
 If you want the development version then install directly from GitHub:
 
 ```{r, eval = FALSE}
-# install.packages("customsteps")
 devtools::install_github("smaakage85/customsteps")
 ```
 
@@ -40,7 +39,7 @@ arguments, 2. returns a function as its result.*
 
 `customsteps` offers higher-order recipe step functions, that create 
 specifications of recipe steps, that will transform or 
-filter the data in accordance with custom input functions. 
+filter the data in accordance with (custom) input functions. 
 
 For more details on how to use `customsteps` please take a look at the
 package vignette.
