@@ -84,11 +84,11 @@
 #'
 #' # define prep helper function, that computes means and standard deviations
 #' # for (an arbitrary number of) numeric variables.
-# compute_means_sd <- function(x) {
-#   
-#   map(.x = x, ~ list(mean = mean(.x), sd = sd(.x)))
-#   
-# }
+#' compute_means_sd <- function(x) {
+#'  
+#'  map(.x = x, ~ list(mean = mean(.x), sd = sd(.x)))
+#'  
+#' }
 #'
 #' # define bake helper function, that centers numeric variables to have
 #' # a mean of 'alpha' and scale them to have a standard deviation of
@@ -109,11 +109,11 @@
 #'
 #' # create recipe.
 #' rec <- recipe(cars_initial) %>%
-#'  step_custom_transformation(mpg, disp,
-#'                             prep_function = compute_means_sd,
-#'                             bake_function = center_scale,
-#'                             bake_options = list(alpha = 0, beta = 1),
-#'                             bake_how = "replace")
+#'   step_custom_transformation(mpg, disp,
+#'                              prep_function = compute_means_sd,
+#'                              bake_function = center_scale,
+#'                              bake_options = list(alpha = 0, beta = 1),
+#'                              bake_how = "replace")
 #'
 #' # prep recipe.
 #' rec_prep <- prep(rec)
