@@ -78,45 +78,48 @@
 #' library(recipes)
 #' library(generics)
 #'
-#' # generate data.
-#' df <- tibble(a = rnorm(100),
-#'              b = rnorm(100),
-#'              c = rnorm(100))
+#' # divide 'mtcars' into two data sets.
+#' cars_initial <- mtcars[1:16, ]
+#' cars_new <- mtcars[17:nrow(mtcars), ]
 #'
 #' # define prep helper function, that computes means and standard deviations
-#' # for all variables in a data set.
-#' compute_means_sd <- function(x, na.rm = FALSE, trim = 0) {
+#' # for (an arbitrary number of) numeric variables.
+# compute_means_sd <- function(x) {
+#   
+#   map(.x = x, ~ list(mean = mean(.x), sd = sd(.x)))
+#   
+# }
 #'
-#'   map(x, ~ list(mean = mean(.x, na.rm = na.rm, trim = trim),
-#'                 sd = sd(.x)))
-#'
-#' }
-#'
-#' # define bake helper function, that subtracts k means from the variable and
-#' # then divides by the standard deviation.
-#' center_scale <- function(x, prep_output, k) {
-#'
+#' # define bake helper function, that centers numeric variables to have
+#' # a mean of 'alpha' and scale them to have a standard deviation of
+#' # 'beta'.
+#' center_scale <- function(x, prep_output, alpha, beta) {
+#'   
+#'   # extract only the relevant variables from the new data set.
 #'   new_data <- select(x, names(prep_output))
-#'
+#'   
+#'   # apply transformation to each of these variables.
+#'   # variables are centered around 'alpha' and scaled to have a standard 
+#'   # deviation of 'beta'.
 #'   map2(.x = new_data,
 #'        .y = prep_output,
-#'        ~ (.x - k * .y$mean) / .y$sd)
+#'        ~ alpha + (.x - .y$mean) * beta / .y$sd)
+#'   
 #' }
 #'
 #' # create recipe.
-#' rec <- recipe(df) %>%
-#'   step_custom_transformation(b, c,
-#'                              prep_function = compute_means_sd,
-#'                              prep_options = list(na.rm = TRUE, trim = 0.05),
-#'                              bake_function = center_scale,
-#'                              bake_options = list(k = 2),
-#'                              bake_how = "bind_cols")
+#' rec <- recipe(cars_initial) %>%
+#'  step_custom_transformation(mpg, disp,
+#'                             prep_function = compute_means_sd,
+#'                             bake_function = center_scale,
+#'                             bake_options = list(alpha = 0, beta = 1),
+#'                             bake_how = "replace")
 #'
 #' # prep recipe.
 #' rec_prep <- prep(rec)
 #'
 #' # bake recipe.
-#' rec_baked <- bake(rec_prep, df)
+#' rec_baked <- bake(rec_prep, cars_new)
 #' rec_baked
 #'
 #' # inspect output.
@@ -392,7 +395,7 @@ print.step_custom_transformation <-
     
     cat("The following variables are used for computing" ,
         " transformations", ifelse(x$bake_how == "replace",
-                                   "\n and dropped afterwards:\n ",
+                                   "\n and will be dropped afterwards:\n ",
                                    ":\n "), sep = "")
     cat(format_selectors(x$terms, wdth = width))
     invisible(x)
