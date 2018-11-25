@@ -19,7 +19,7 @@ This is the first official release, and below I will demonstrate, how
 `customsteps` can be used to create recipe steps, that apply custom 
 transformations to a data set. 
 
-Note, you should already be fairly familiar with the [`recipes`](https://cran.r-project.org/web/packages/recipes/recipes.pdf) package 
+Note, you should already be fairly familiar with the [`recipes`](https://CRAN.R-project.org/package=recipes) package 
 before you continue reading this post or give `customsteps` a spin!
 
 ## Introducing the `customsteps` package
