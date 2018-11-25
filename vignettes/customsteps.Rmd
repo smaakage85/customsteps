@@ -1,5 +1,5 @@
 ---
-title: "One Recipe Step to Rule Them All"
+title: "Introduction to customsteps"
 author: "Lars Kjeldgaard"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
@@ -13,20 +13,28 @@ vignette: >
 knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
 ```
 
-In this post I will demonstrate, how my new R package `customsteps` can be used 
-to generate recipe steps, that apply custom transformations to a data set. 
+`customsteps` 0.7.0.0 is now available on CRAN. 
+
+This is the first official release, and below I will demonstrate, how 
+`customsteps` can be used to create recipe steps, that apply custom 
+transformations to a data set. 
 
 Note, you should already be fairly familiar with the [`recipes`](https://cran.r-project.org/web/packages/recipes/recipes.pdf) package 
 before you continue reading this post or give `customsteps` a spin!
 
 ## Introducing the `customsteps` package
 
-Along with the `recipes` package distribution comes a number of pre-specified steps, that enables the user to manipulate data sets in various ways. The
-resulting data sets (/design matrices) can then be used as inputs 
-into statistical or machine learning models. 
+Along with the `recipes` package distribution comes a number of pre-specified
+steps, that enables the user to manipulate data sets in various ways. The
+resulting data sets (/design matrices) can then be used as inputs into
+statistical or machine learning models.
 
-If you want to apply a specific transformation to your data set, that is not supported by the pre-specified steps, you have two options. You can write an entire [custom recipe step **from
-scratch**](https://github.com/tidymodels/recipes/blob/master/vignettes/Custom_Steps.Rmd). This however takes quite a bit of work and code. An alternative - and sometimes better - approach is to apply the `customsteps` package, that I have just released on CRAN.
+If you want to apply a specific transformation to your data set, that is not
+supported by the pre-specified steps, you have two options. You can write an
+entire [custom recipe step **from
+scratch**](https://github.com/tidymodels/recipes/blob/master/vignettes/Custom_Steps.Rmd).
+This however takes quite a bit of work and code. An alternative - and sometimes
+better - approach is to apply the `customsteps` package.
 
 ```{r, message = FALSE, warning = FALSE}
 # install.packages("customsteps")
@@ -35,8 +43,9 @@ library(customsteps)
 
 ### Customizable Higher-Order Steps
 
-`customsteps` contains a set of customizable higher-order recipe step
-functions, that create specifications of recipe steps, that will transform or filter the data in accordance with custom input functions. 
+`customsteps` contains a set of customizable higher-order recipe step functions,
+that create specifications of recipe steps, that will transform or filter the
+data in accordance with custom input functions.
 
 Let me just remind you of the definition of [**higher-order functions**](https://en.wikipedia.org/wiki/Higher-order_function):
 
@@ -62,7 +71,9 @@ $\hat{\mathbf{x}} = \alpha + (\mathbf{x} - \bar{\mathbf{x}})\frac{\beta}{s_\math
 where $\bar{\mathbf{x}}$ is the mean of $\mathbf{x}$, and 
 $s_\mathbf{x}$ is the standard deviation of ${\mathbf{x}}$.
 
-Note that centering ${\mathbf{x}}$ around 0 and scaling it in order to arrive at a standard deviation of 1 is just a special case of the above transformation with parameters $\alpha = 0, \beta = 1$.
+Note that centering ${\mathbf{x}}$ around 0 and scaling it in order to arrive at
+a standard deviation of 1 is just a special case of the above transformation
+with parameters $\alpha = 0, \beta = 1$.
 
 ### Write the `prep` helper function
 
@@ -75,8 +86,8 @@ standard deviation $s_\mathbf{x}$ to be learned from the initial data set.
 Therefore I define a function `compute_means_sd`, that estimates the two 
 parameters for (an arbitrary number of) numeric variables. 
 
-By convention the `prep` helper function must take the argument `x`: the subset of 
-selected variables from the initial data set.
+By convention the `prep` helper function must take the argument `x`: the subset
+of selected variables from the initial data set.
 
 ```{r, message = FALSE, warning = FALSE}
 library(purrr)
@@ -118,7 +129,7 @@ intial data set.
 By convention the `bake` helper function must take the following arguments:
 
 * `x`: the new data set, that the step will be applied to.
-* `prep_output`: the output from `prep` helper function containing 
+* `prep_output`: the output from the `prep` helper function containing 
 any parameters estimated from the initial data set.
 
 I define the function `center_scale`, that will serve as my `bake` helper 
@@ -140,7 +151,7 @@ center_scale <- function(x, prep_output, alpha, beta) {
 }
 ```
 
-Let us see the function in action. My first (sanity) check of the function is to
+My first (sanity) check of the function is to
 apply it to the initial data set, that was used for estimation of
 the means and standard deviations.
 
@@ -234,18 +245,3 @@ Results are as expected (same as before). Great succes!
 You should now be able
 to create your very own recipe steps to do (almost) whatever 
 transformation to your data, that you want.
-
-## Conclusions
-
-* Customized recipe steps can be created with a minimum of effort and code using
-my new R package `customsteps`.
-* The `customsteps` step functions are higher-order functions,
-that create specificiations of recipe steps from custom input functions.
-
-Please let me hear from you, if you have any feedback on the package. 
-
-Best,
-smaakagen
-
-
-

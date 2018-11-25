@@ -1,8 +1,8 @@
 Package: customsteps
-Title: Customizable Higher-Order Recipes Step Functions
+Title: Customizable Higher-Order Recipe Step Functions
 Version: 0.7.0.0
 Authors@R: person("Lars", "Kjeldgaard", email = "lars_kjeldgaard@hotmail.com", role = c("aut", "cre"))
-Description: A set of customizable higher-order recipe step functions for 
+Description: Customizable higher-order recipe step functions for 
     the 'recipes' package. These step functions take 'prep' and 'bake' helper 
     functions as inputs and create specifications of customized recipe steps 
     as output.
