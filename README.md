@@ -4,6 +4,7 @@ customsteps <img src="man/figures/logo.png" align="right" />
 ============================================================
 
 [![Travis-CI Build Status](https://travis-ci.org/smaakage85/customsteps.svg?branch=master)](https://travis-ci.org/smaakage85/customsteps) [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/smaakage85/customsteps?branch=master&svg=true)](https://ci.appveyor.com/project/smaakage85/customsteps)
+[![CRAN\_Release\_Badge](http://www.r-pkg.org/badges/version-ago/customsteps)](https://CRAN.R-project.org/package=customsteps) [![CRAN\_Download\_Badge](http://cranlogs.r-pkg.org/badges/customsteps)](https://CRAN.R-project.org/package=customsteps)
 
 This is a small package that offers a set of customizable higher-order recipe step functions compatible with the [`recipes`](https://CRAN.R-project.org/package=recipes) package.
 
