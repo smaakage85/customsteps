@@ -251,7 +251,6 @@ step_custom_transformation_new <-
 # prepare step (train step/estimate parameters on training data).
 #' @export
 #' @importFrom recipes prep terms_select
-#' @importFrom purrr invoke
 prep.step_custom_transformation <- function(x, training, info = NULL, ...) {
   
   # selected vars as character vector.
@@ -273,7 +272,7 @@ prep.step_custom_transformation <- function(x, training, info = NULL, ...) {
     
     # compute intermediate output from prep helper function.
     prep_output <- tryCatch({
-      invoke(x$prep_function, args)},
+      do.call(x$prep_function, args)},
       error = function(e) {
         stop("An error occured in the call to the prep helper function",
              "('prep_function'). See details below: \n",
@@ -307,7 +306,6 @@ prep.step_custom_transformation <- function(x, training, info = NULL, ...) {
 # bake step (/apply step on new data).
 #' @export
 #' @importFrom dplyr bind_cols select
-#' @importFrom purrr invoke
 #' @importFrom recipes bake
 #' @importFrom tibble as_tibble
 bake.step_custom_transformation <- function(object, new_data, ...) {
@@ -330,7 +328,7 @@ bake.step_custom_transformation <- function(object, new_data, ...) {
   # invoke the bake helper function.
   bake_function_output <-
     tryCatch({
-      invoke(object$bake_function, args)
+      do.call(object$bake_function, args)
       },
       error = function(e) {
       stop("An error occured in the call to the bake helper function",

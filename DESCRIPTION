@@ -1,12 +1,12 @@
 Package: customsteps
 Title: Customizable Higher Order Recipes Step Functions
-Version: 0.7.0.0
+Version: 0.7.1
 Authors@R: person("Lars", "Kjeldgaard", email = "lars.kjeldgaard@hotmail.com", role = c("aut", "cre"))
 Description: Higher order step functions for the 'recipes' package. These 
     step functions take 'prep' and 'bake' helper functions as inputs and create 
     specifications of customized 'recipes' steps as output.
 URL: https://github.com/smaakage85/customsteps
-Depends: R (>= 3.5.0)
+Depends: R (>= 3.1.0)
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
@@ -22,4 +22,4 @@ Imports: recipes,
     tidyselect,
     methods,
     generics
-RoxygenNote: 6.1.0
+RoxygenNote: 6.1.1

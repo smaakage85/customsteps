@@ -173,7 +173,6 @@ step_custom_filter_new <-
 # prepare step (detect problematic variables on training data).
 #' @export
 #' @importFrom recipes prep terms_select
-#' @importFrom purrr invoke
 #' @importFrom dplyr setdiff
 prep.step_custom_filter <- function(x, training, info = NULL, ...) {
   
@@ -188,7 +187,7 @@ prep.step_custom_filter <- function(x, training, info = NULL, ...) {
   }
   
   # identify problematic variables using the filter function.
-  filter <- tryCatch({invoke(x$filter_function, filter_args)},
+  filter <- tryCatch({do.call(x$filter_function, filter_args)},
                      error = function(e) {
                        stop("Error when invoking the filter function. ",
                             "See details below: \n",
